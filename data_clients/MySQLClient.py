@@ -553,7 +553,7 @@ class DataClient:
             request = f"UPDATE {self.DATABASE_NAME}.{table} SET score='{user_score}' WHERE id = '{result[1]}';"
             result_2 = self.execute_request(request)
         else:
-            self.set_new_user_quiz(user_id=user_id, quiz_id=quiz_id)
+            self.set_new_user_quiz(user_id=user_id, quiz_id=quiz_id, language="ru")
 
     ## Wrong function
     def get_data(self, table_title: str) -> str:
@@ -808,8 +808,9 @@ class DataClient:
                   f"event_id = '{event_id}' AND language = '{language}';"
         return self.get_element_id(request=request)
 
-    def get_trip_id(self, title: str, language: str = "en") -> int:
+    def get_trip_id(self, title: str, language: str = "ru") -> int:
         table = "trip"
+        print(title, language)
         request = f"SELECT id FROM {self.DATABASE_NAME}.{table} WHERE title = '{title}'" \
                   f" AND language = '{language}';"
         return self.get_element_id(request=request)

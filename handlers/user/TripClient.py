@@ -80,13 +80,13 @@ class TripClient:
                 if data["trip_elem_num"] != data["count_trip_elem"]:
                     data["trip_elem_num"] += 1
                 else:
-                    await msg.answer("Это первая страница")
+                    await msg.answer("Это последняя страница")
                     return
             elif msg.text == "<":
                 if data["trip_elem_num"] != 1:
                     data["trip_elem_num"] -= 1
                 else:
-                    await msg.answer("Это последняя страница")
+                    await msg.answer("Это первая страница")
                     return
             else:
                 await msg.answer("Такой функции нет")

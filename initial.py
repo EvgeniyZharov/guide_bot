@@ -16,10 +16,6 @@ AgACAgIAAxkBAAIO_2XgoY-fHE7mQ4SjzEJm59XooLsLAALT1zEbyMYAAUuOiUQ1x3xrvwEAAwIAA3kA
 
 """
 
-
-
-
-
 # print(data_client.get_random_ask(quiz_id=14, ask_id_ready=[37, 38]))
 storage = MemoryStorage()
 
