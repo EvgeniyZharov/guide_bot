@@ -35,7 +35,7 @@ class TripClient:
 
     async def choice_trip(self, msg: types.Message, state: FSMContext):
         async with state.proxy() as data:
-            trip_id = self.data_client.get_trip_id(title=msg.text )
+            trip_id = self.data_client.get_trip_id(title=msg.text, language=data["user_lang"])
             trip_data = self.data_client.get_trip_info(trip_id=trip_id, language=data["user_lang"])
             data["trip_title"] = msg.text
             data["trip_id"] = trip_id
