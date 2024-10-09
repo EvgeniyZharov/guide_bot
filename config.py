@@ -1,17 +1,15 @@
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-MAIN_TOKEN = "6624087340:AAEXsNDJKl8RPfNJ9TJOilcnvikkWSz0K4A"
+MAIN_TOKEN = ""
 
-# host = "127.0.0.1"
-# user = "root"
-# password = "pass123"
-host = "185.104.251.222"
-user = "user1"
-password = "pass123"
+
+host = ""
+user = ""
+password = ""
 
 db_version = "1.0"
 
-BASE_IMAGE_ID = "AgACAgIAAxkBAAILY2XcHhaSd3Q0943o8bXKCHKwwE1NAAJF0zEbgIbgStyAcKz-ydagAQADAgADeQADNAQ"
+BASE_IMAGE_ID = ""
 
 
 # ["Начать викторину", "Посмотреть статистику", "Виртуальный гид", "Узнать про HSE Travel"]
