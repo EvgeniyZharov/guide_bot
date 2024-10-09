@@ -26,7 +26,8 @@ class TripClient:
             user_lang = self.data_client.get_user_lang(user_id=str(msg.from_user.id))
             data["user_lang"] = user_lang
             # Выберите мероприятие
-            btn = self.data_client.get_trip_btn(town_id=1, language=user_lang)
+            town_id = 1 if user_lang == "ru" else 2
+            btn = self.data_client.get_trip_btn(town_id=town_id, language=user_lang)
             await msg.answer(languages[user_lang]["start_trip"],
                              reply_markup=create_keyboards(btn, cancel_btn=True,
                                                            user_lang=user_lang))
@@ -34,7 +35,7 @@ class TripClient:
 
     async def choice_trip(self, msg: types.Message, state: FSMContext):
         async with state.proxy() as data:
-            trip_id = self.data_client.get_trip_id(title=msg.text)
+            trip_id = self.data_client.get_trip_id(title=msg.text )
             trip_data = self.data_client.get_trip_info(trip_id=trip_id, language=data["user_lang"])
             data["trip_title"] = msg.text
             data["trip_id"] = trip_id
@@ -95,12 +96,12 @@ class TripClient:
                                                                      num_elem=data["trip_elem_num"],
                                                                      language=data["user_lang"])
             text = f"{trip_elem_info['title']}\n{trip_elem_info['description']}"
-            if trip_elem_info["image_link"] != "0":
+            if trip_elem_info["image_link"] not in ["0", "", " "]:
                 image_link = trip_elem_info["image_link"]
             else:
                 image_link = BASE_IMAGE_ID
             await bot.send_photo(msg.from_user.id, photo=image_link, caption=text)
-            if trip_elem_info["audio_link"] != "0":
+            if trip_elem_info["audio_link"] not in ["0", "", " "]:
                 await bot.send_audio(msg.from_user.id, audio=f"{trip_elem_info['audio_link']}")
 
     async def close_run_trip(self, msg: types.Message, state: FSMContext):

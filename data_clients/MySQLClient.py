@@ -265,7 +265,7 @@ class DataClient:
                       version VARCHAR(20) default '{db_version}',
 
                       PRIMARY KEY(id),
-                      UNIQUE(title),
+                      UNIQUE(title, trip_stage_id),
                       FOREIGN KEY(trip_stage_id) REFERENCES trip_stage(id) ON DELETE CASCADE ON UPDATE CASCADE)"""
         return self.create_table(request=request)
 
@@ -503,17 +503,17 @@ class DataClient:
                               image_link: str,
                               audio_link: str,
                               ) -> bool:
-
         table1, table2 = "stage_element", "trip_stage"
         request = f"SELECT COUNT(*) as count FROM {self.DATABASE_NAME}.{table1} WHERE trip_stage_id = '{trip_stage_id}';"
         num_elem = self.get_info(request=request)[0]["count"] + 1
         request = f"INSERT INTO {self.DATABASE_NAME}.{table1} (trip_stage_id, title, image_link, audio_link, description, num_elem, language) VALUES " \
                   f"('{trip_stage_id}', '{title}', '{image_link}', '{audio_link}', '{description}', '{num_elem}', '{language}');"
         result = self.set_new_data_2(request=request)
+        res2 = False
         if result:
-            request = f"UPDATE {self.DATABASE_NAME}.{table2} SET count_elem = '{num_elem}';"
-            self.set_new_data_2(request=request)
-        return result
+            request = f"UPDATE {self.DATABASE_NAME}.{table2} SET count_elem = '{num_elem}' WHERE id = '{trip_stage_id}';"
+            res2 = self.set_new_data_2(request=request)
+        return res2
 
     def get_info(self, request: str) -> list:
         with self.con.cursor() as cur:
@@ -673,7 +673,6 @@ class DataClient:
         request = f"SELECT * FROM {self.DATABASE_NAME}.{table} WHERE quiz_id = '{quiz_id}';"
         data = self.get_info(request)
         index_ask = len(ask_id)
-        # print(f"len asks: {index_ask}")
         return [True, data[index_ask]] if index_ask != len(data) else [False, dict()]
 
     def get_statistics(self, user_id: int, user_lang: str) -> str:
@@ -810,15 +809,24 @@ class DataClient:
 
     def get_trip_id(self, title: str, language: str = "ru") -> int:
         table = "trip"
-        print(title, language)
         request = f"SELECT id FROM {self.DATABASE_NAME}.{table} WHERE title = '{title}'" \
                   f" AND language = '{language}';"
         return self.get_element_id(request=request)
 
     def get_trip_stage_id(self, title: str, trip_id: int, num: int, language: str = "en") -> int:
         table = "trip_stage"
+        print(title, trip_id, num, language)
         request = f"SELECT id FROM {self.DATABASE_NAME}.{table} WHERE title = '{title}' AND " \
-                  f"trip_id = '{trip_id}' AND language = '{language}' AND num_stage = '{num}';"
+                  f"trip_id = {trip_id} AND language = '{language}';"
+        print(request)
+        result = self.get_element_id(request=request)
+        print(result)
+        return self.get_element_id(request=request)
+
+    def get_trip_stage_id_2(self, title: str, trip_id: int, language: str = "en") -> int:
+        table = "trip_stage"
+        request = f"SELECT id FROM {self.DATABASE_NAME}.{table} WHERE title = '{title}' AND " \
+                  f"trip_id = {trip_id} AND language = '{language}';"
         return self.get_element_id(request=request)
 
     def get_event_type_info(self, event_type_id: int,language: str = "en") -> dict:
@@ -855,7 +863,7 @@ class DataClient:
     def get_trip_stage_info(self, trip_stage_id: int, num: int, language: str = "en") -> dict:
         table = "trip_stage"
         request = f"SELECT * FROM {self.DATABASE_NAME}.{table} WHERE id = '{trip_stage_id}'" \
-                  f" AND language = '{language}' AND num_stage = '{num}';"
+                  f" AND language = '{language}';"
         return self.get_element_info(request=request)
 
     def get_stage_element_info(self, trip_stage_id: int, num_elem: int, language: str = "en") -> dict:
