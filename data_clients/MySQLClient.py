@@ -413,11 +413,12 @@ class DataClient:
     def set_new_user_quiz(self,
                           user_id: int,
                           quiz_id: int,
-                          language: str) -> bool:
+                          language: str,
+                          score: int) -> bool:
         table = "user_quiz"
         request = f"INSERT INTO {self.DATABASE_NAME}.{table} (user_id, quiz_id, score, language) " \
                   "VALUES (%s, %s, %s, %s);"
-        record = [(user_id, quiz_id, 0, language)]
+        record = [(user_id, quiz_id, score, language)]
         return self.set_new_data(request=request, record=record)
 
     def set_new_event_type(self,
@@ -553,7 +554,7 @@ class DataClient:
             request = f"UPDATE {self.DATABASE_NAME}.{table} SET score='{user_score}' WHERE id = '{result[1]}';"
             result_2 = self.execute_request(request)
         else:
-            self.set_new_user_quiz(user_id=user_id, quiz_id=quiz_id, language="ru")
+            self.set_new_user_quiz(user_id=user_id, quiz_id=quiz_id, language="ru", score=score)
 
     ## Wrong function
     def get_data(self, table_title: str) -> str:
@@ -815,12 +816,8 @@ class DataClient:
 
     def get_trip_stage_id(self, title: str, trip_id: int, num: int, language: str = "en") -> int:
         table = "trip_stage"
-        print(title, trip_id, num, language)
         request = f"SELECT id FROM {self.DATABASE_NAME}.{table} WHERE title = '{title}' AND " \
                   f"trip_id = {trip_id} AND language = '{language}';"
-        print(request)
-        result = self.get_element_id(request=request)
-        print(result)
         return self.get_element_id(request=request)
 
     def get_trip_stage_id_2(self, title: str, trip_id: int, language: str = "en") -> int:
