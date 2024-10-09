@@ -95,14 +95,12 @@ class QuizClient:
         async with state.proxy() as data:
             if data["true_q"] == msg.text:
                 back_msg = languages[user_lang]["true_answer"]
-                if data["big_answer"] != "no":
-                    back_msg += f"\n\n{data['big_answer']}" if data['big_answer'] != "space" else ""
+                back_msg += f"\n\n{data['big_answer']}" if data['big_answer'] != "space" else ""
                 await msg.answer(back_msg)
                 score = 10
             else:
                 back_msg = languages[user_lang]["error_answer"] + f"{data['true_q']}."
-                if data["big_answer"] != "no":
-                    back_msg += f"\n\n{data['big_answer']}" if data['big_answer'] != "space" else ""
+                back_msg += f"\n\n{data['big_answer']}" if data['big_answer'] != "space" else ""
                 await msg.answer(back_msg)
                 score = 0
             self.data_client.set_score_user_quiz(user_id=data["user_id"], quiz_id=data["quiz_id"], score=score)
